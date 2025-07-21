@@ -99,7 +99,7 @@ button:hover {
 
 .task-time {
   font-size: 0.9rem;
-  color: #9e9e9e;
+  color: #b4dae9;
   width: 70px;
 }
 
@@ -183,7 +183,7 @@ button:hover {
 
 .task-duration {
   font-size: 0.9rem;
-  color: #aaa;
+  color: #757474;
   margin-left: 1rem;
 }
 
@@ -210,6 +210,9 @@ button:hover {
   color:rgb(171, 171, 171);
 }
 
+.time-button {
+  color:red;
+}
 
 @media (max-width: 600px) {
   body {
@@ -225,6 +228,9 @@ button:hover {
   .task-duration {
     font-size: 0.7rem;
     margin:0;
+  }
+  .task-actions {
+    font-size: 0.1rem;
   }
 
 }
