@@ -7,15 +7,20 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Double:wght@100..900&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Double:wght@100..900&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Double:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
   <div class="app">
     <h1> Productivity To-Do List</h1>
+    <div class = "startTime">      
+      <label for="startTimeInput">Starting Time:</label>
+      <input type="time" id="startTimeInput" />
+    </div>
+
+
     <div class="input-container">
+
       <input type="text" id="taskInput" placeholder="Enter a task..." />
       <label for="range1">Duration: <span id="durationValue">30</span> mins</label>
       <input type="range" id="range1" min="5" max="180" value="30" step="5" />
@@ -25,10 +30,11 @@
   </div>
 
   <!-- Sound effects -->
-  <audio id="sound-add" src="sounds/adding.mp3"></audio>
-  <audio id="sound-complete" src="sounds/completed.mp3"></audio>
-  <audio id="sound-delete" src="sounds/delete.mp3"></audio>
-  <audio id="sound-click" src="sounds/click.mp3"></audio>
+  <audio id="sound-add" src="https://cameraboyy.github.io/sounds/adding.mp3.mp3"></audio>
+  <audio id="sound-complete" src="https://cameraboyy.github.io/sounds/completed.mp3"></audio>
+  <audio id="sound-delete" src="https://cameraboyy.github.io/sounds/delete.mp3"></audio>
+  <audio id="sound-click" src="https://cameraboyy.github.io/sounds/click.mp3"></audio>
   <script src="script.js"></script>
 </body>
 </html>
+
