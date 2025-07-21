@@ -87,24 +87,26 @@ function renderTasks() {
 
     const durationDisplay = document.createElement("div");
     durationDisplay.className = "task-duration";
-    durationDisplay.textContent = `(${task.duration} min)`;
+    durationDisplay.textContent = `(${task.duration}m)`;
 
     const actions = document.createElement("div");
     actions.className = "task-actions";
     actions.innerHTML = `
-      <button onclick="editDuration(${originalIndex})">⏱</button>
-      <button onclick="toggleComplete(${originalIndex})">✔</button>
-      <button onclick="deleteTask(${originalIndex})">✖</button>
+      <button class="time-button" onclick="editDuration(${originalIndex})">⏱</button>
+      <button class="tick-button" onclick="toggleComplete(${originalIndex})">✔</button>
+      <button class="delete-button" onclick="deleteTask(${originalIndex})">✖</button>
     `;
 
     const left = document.createElement("div");
     left.className = "task-left";
     if (!task.completed) left.appendChild(taskTime); // Only add time for incomplete tasks
     left.appendChild(taskText);
-    left.appendChild(durationDisplay);
+    if (!task.completed) left.appendChild(durationDisplay);
+
 
     li.appendChild(left);
     li.appendChild(actions);
+
     taskList.appendChild(li);
 
     li.addEventListener("dragstart", dragStart);
