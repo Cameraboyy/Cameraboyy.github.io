@@ -7,16 +7,12 @@ const durationValue = document.getElementById("durationValue");
 const soundAdd = document.getElementById("sound-add");
 const soundComplete = document.getElementById("sound-complete");
 const soundDelete = document.getElementById("sound-delete");
-const soundClick = document.getElementById("sound-click");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
 durationSlider.addEventListener("input", () => {
-  durationValue.innerHTML = "<strong>" + durationSlider.value + "</strong>";
+  durationValue.textContent = durationSlider.value;
 });
-
-document.addEventListener("click", function() {soundClick.play;})
-
 
 addBtn.addEventListener("click", () => {
   const text = taskInput.value.trim();
@@ -30,23 +26,53 @@ addBtn.addEventListener("click", () => {
   }
 });
 
+const startTimeInput = document.getElementById("startTimeInput");
+let startTimeStr = localStorage.getItem("startTime") || getCurrentTimeString();
+startTimeInput.value = startTimeStr;
+
+startTimeInput.addEventListener("change", () => {
+  startTimeStr = startTimeInput.value;
+  localStorage.setItem("startTime", startTimeStr);
+  renderTasks();
+});
+
+function getCurrentTimeString() {
+  const now = new Date();
+  return now.toTimeString().slice(0, 5); // Format: HH:MM
+}
+
+
+
+
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function renderTasks() {
   taskList.innerHTML = "";
-  let currentTime = new Date();
 
-  tasks.forEach((task, index) => {
+  // Sort: incomplete tasks first, completed ones last
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (a.completed === b.completed) return 0;
+    return a.completed ? 1 : -1;
+  });
+
+  let currentTime = new Date();
+  const [hours, minutes] = startTimeStr.split(":").map(Number);
+  currentTime.setHours(hours, minutes, 0, 0);
+
+
+  sortedTasks.forEach((task, sortedIndex) => {
     const li = document.createElement("li");
     li.className = "task-item";
     li.draggable = true;
-    li.dataset.index = index;
+    const originalIndex = tasks.indexOf(task);
+    li.dataset.index = originalIndex;
 
+    // Only show time if the task is not completed
     const taskTime = document.createElement("div");
     taskTime.className = "task-time";
-    taskTime.textContent = formatTime(currentTime);
+    taskTime.textContent = task.completed ? "" : formatTime(currentTime);
 
     const taskText = document.createElement("div");
     taskText.className = "task-text";
@@ -55,36 +81,44 @@ function renderTasks() {
     if (task.completed) taskText.classList.add("completed");
 
     taskText.addEventListener("blur", () => {
-      tasks[index].text = taskText.textContent.trim();
+      task.text = taskText.textContent.trim();
       saveTasks();
     });
+
+    const durationDisplay = document.createElement("div");
+    durationDisplay.className = "task-duration";
+    durationDisplay.textContent = `(${task.duration} min)`;
 
     const actions = document.createElement("div");
     actions.className = "task-actions";
     actions.innerHTML = `
-      <button onclick="toggleComplete(${index})">✔</button>
-      <button onclick="deleteTask(${index})">✖</button>
+      <button onclick="editDuration(${originalIndex})">⏱</button>
+      <button onclick="toggleComplete(${originalIndex})">✔</button>
+      <button onclick="deleteTask(${originalIndex})">✖</button>
     `;
 
     const left = document.createElement("div");
     left.className = "task-left";
-    left.appendChild(taskTime);
+    if (!task.completed) left.appendChild(taskTime); // Only add time for incomplete tasks
     left.appendChild(taskText);
+    left.appendChild(durationDisplay);
 
     li.appendChild(left);
     li.appendChild(actions);
     taskList.appendChild(li);
 
-    // Drag-and-drop handlers
     li.addEventListener("dragstart", dragStart);
     li.addEventListener("dragover", dragOver);
     li.addEventListener("drop", drop);
     li.addEventListener("dragend", dragEnd);
 
-    // Update time for next task
-    currentTime = new Date(currentTime.getTime() + task.duration * 60000);
+    if (!task.completed) {
+      currentTime = new Date(currentTime.getTime() + task.duration * 60000);
+    }
   });
 }
+
+
 
 function formatTime(date) {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -104,6 +138,17 @@ function deleteTask(index) {
   soundDelete.play();
 }
 
+function editDuration(index) {
+  const current = tasks[index].duration;
+  const newDuration = prompt("Enter new duration in minutes:", current);
+  const value = parseInt(newDuration);
+  if (!isNaN(value) && value > 0) {
+    tasks[index].duration = value;
+    saveTasks();
+    renderTasks();
+  }
+}
+
 // Drag & Drop
 let draggedIndex = null;
 
@@ -114,8 +159,6 @@ function dragStart(e) {
 
 function dragOver(e) {
   e.preventDefault();
-  const overItem = e.target.closest(".task-item");
-  if (!overItem || overItem.dataset.index === draggedIndex) return;
 }
 
 function drop(e) {
@@ -133,6 +176,10 @@ function dragEnd(e) {
   draggedIndex = null;
 }
 
-// Initial render on load
+// Initial render
 renderTasks();
 
+
+
+
+//STORING USEFUL ICONS:  ✖,✔,
